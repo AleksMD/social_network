@@ -14,6 +14,9 @@ class User(models.Model):
     class Meta:
         ordering = ['first_name', 'last_name']
 
+    def __str__(self):
+        return f'<User: username={self.username}>'
+
 
 class Post(models.Model):
     author = models.ForeignKey('User', related_name='author',
@@ -27,3 +30,6 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['date_of_creation']
+
+    def __str__(self):
+        return f'<Post: post_author={self.author}>'
