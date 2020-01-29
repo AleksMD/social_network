@@ -1,14 +1,79 @@
-from sn_network.models import User, Post
-from rest_framework import viewsets
-from sn_network.serializers import UserSerializer, PostSerializer
+from sn_network.models import User, Post, UserProfile
+from rest_framework import viewsets, status
+from rest_framework.generics import CreateAPIView
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from sn_network.serializers import (UserProfileSerializer,
+                                    PostSerializer,
+                                    UserSignUpSerializer)
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class UserSignUpView(CreateAPIView):
+    serializer_class = UserSignUpSerializer
+    permission_classes = [AllowAny, ]
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        status_code = status.HTTP_201_CREATED
+        response = {
+            'success': 'True',
+            'status code': status_code,
+            'message': 'You have been successfully registered',
+            }
+        return Response(response, status=status_code)
+
+
+class PostCreateView(CreateAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated, ]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated, ]
 
 
 class PostViewSet(viewsets.ModelViewSet):
 
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated, ]
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, ])
+def user_like_post(request, user_pk=None, post_pk=None):
+    if user_pk and post_pk:
+        user = User.objects.filter(id=user_pk).first()
+        post = Post.objects.filter(id=post_pk).first()
+        user.user_profile.like_it.add(post)
+        user.save()
+        status_code = status.HTTP_200_OK
+        context = [
+            {'message': f'User: {user.username} likes post: {post.title}'}
+        ]
+        return Response(context, status_code)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, ])
+def user_unlike_post(request, user_pk=None, post_pk=None):
+    if user_pk and post_pk:
+        user = User.objects.filter(id=user_pk).first()
+        post = Post.objects.filter(id=post_pk).first()
+        user.user_profile.like_it.remove(post)
+        user.save()
+        status_code = status.HTTP_200_OK
+        context = [
+            {'message': f'User: {user.username} unlikes post: {post.title}'}
+        ]
+        return Response(context, status_code)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
