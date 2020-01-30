@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'sn_network',
     'user_app',
     'post_app',
-    'rest_framework'
+    'rest_framework',
+    'emailhunter_app',
+    'rest_framework_simplejwt'
 ]
 
 MIDDLEWARE = [
@@ -169,3 +171,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'user_app.User'
+EMAILHUNTER_API_KEY = '667f9f94b388fc865980eae2228c989d2e0dabf7'
+EMAILHUNTER_URL = 'https://api.hunter.io/v2/email-verifier'

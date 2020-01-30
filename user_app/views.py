@@ -6,7 +6,6 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.contrib.auth import authenticate
 from user_app.serializers import (UserProfileSerializer,
                                   UserSignUpSerializer,
                                   UserLoginSerializer)
@@ -36,11 +35,9 @@ class UserLoginView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = authenticate(username=request.data['username'],
-                            password=request.data['password'])
-        print(user)
-        print(dir(user))
-        return Response(status.HTTP_200_OK)
+        if request.user.is_authenticated:
+            return Response(status.HTTP_200_OK)
+        return Response(status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
