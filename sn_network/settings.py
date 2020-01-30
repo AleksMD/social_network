@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sn_network',
+    'user_app',
+    'post_app',
     'rest_framework'
 ]
 
@@ -166,4 +168,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-AUTH_USER_MODEL = 'sn_network.User'
+AUTH_USER_MODEL = 'user_app.User'

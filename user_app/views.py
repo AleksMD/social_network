@@ -1,12 +1,15 @@
-from sn_network.models import User, Post, UserProfile
+from user_app.models import User, UserProfile
+from post_app.models import Post
 from rest_framework import viewsets, status
+from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from sn_network.serializers import (UserProfileSerializer,
-                                    PostSerializer,
-                                    UserSignUpSerializer)
+from django.contrib.auth import authenticate
+from user_app.serializers import (UserProfileSerializer,
+                                  UserSignUpSerializer,
+                                  UserLoginSerializer)
 
 
 class UserSignUpView(CreateAPIView):
@@ -26,25 +29,18 @@ class UserSignUpView(CreateAPIView):
         return Response(response, status=status_code)
 
 
-class PostCreateView(CreateAPIView):
-    serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated, ]
+class UserLoginView(APIView):
+    serializer_class = UserLoginSerializer
+    permission_classes = [AllowAny, ]
 
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
-
-
-class UserProfileViewSet(viewsets.ModelViewSet):
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated, ]
-
-
-class PostViewSet(viewsets.ModelViewSet):
-
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated, ]
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = authenticate(username=request.data['username'],
+                            password=request.data['password'])
+        print(user)
+        print(dir(user))
+        return Response(status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -77,3 +73,9 @@ def user_unlike_post(request, user_pk=None, post_pk=None):
         ]
         return Response(context, status_code)
     return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated, ]

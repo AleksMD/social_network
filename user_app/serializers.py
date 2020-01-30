@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from sn_network.models import UserProfile, Post, User
+from user_app.models import UserProfile, User
 
 
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
@@ -39,20 +39,13 @@ class UserSignUpSerializer(serializers.HyperlinkedModelSerializer):
         return user
 
 
-class PostSerializer(serializers.HyperlinkedModelSerializer):
-
-    author = serializers.ReadOnlyField(source='author.username')
+class UserLoginSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(required=True)
+    token = serializers.CharField(allow_blank=True, read_only=True)
 
     class Meta:
-        model = Post
-        fields = ['url',
-                  'author',
-                  'title',
-                  'date_of_creation',
-                  'users_likes',
-                  'content']
-        read_only_fields = ['author', 'date_of_creation', 'users_likes']
-
-    def create(self, validated_data):
-        post = Post.objects.create(**validated_data)
-        return post
+        model = User
+        fields = ['username',
+                  'password',
+                  'token']
+        extra_kwargs = {'password': {'write_only': True}}
