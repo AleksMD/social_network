@@ -64,7 +64,7 @@ GRANT ALL PRIVILEGES ON DATABASE name_of_your_app_database TO your_user_name;
 
 After database was created update DATABASE section in settings.py
 ### Info
-***In order to be able to use email hunter service you have to own valid
+***In order to be able to use email hunter service you should have valid
 api_key. In app settings it set to None by DEFAULT***
 To get EmailHunter API key sign up on their official web site.
 
