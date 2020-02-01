@@ -171,5 +171,5 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'user_app.User'
-EMAILHUNTER_API_KEY = '667f9f94b388fc865980eae2228c989d2e0dabf7'
+EMAILHUNTER_API_KEY = None
 EMAILHUNTER_URL = 'https://api.hunter.io/v2/email-verifier'
