@@ -36,6 +36,8 @@ class UserSignUpSerializer(serializers.HyperlinkedModelSerializer):
         if profile_data:
             UserProfile.objects.create(user=user,
                                        **profile_data)
+        else:
+            UserProfile.objects.create(user=user, email=user.email)
         return user
 
 

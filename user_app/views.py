@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from user_app.permissions import IsOwnerOrReadOnlyUserProfile
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from user_app.serializers import (UserProfileSerializer,
                                   UserSignUpSerializer,
@@ -35,16 +36,31 @@ class UserLoginView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+        user = User.objects.filter(**serializer.data).first()
+        if user:
+            request.user = user
         if request.user.is_authenticated:
-            return Response(status.HTTP_200_OK)
-        return Response(status.HTTP_400_BAD_REQUEST)
+            status_code = status.HTTP_200_OK
+            response = {
+                'success': 'True',
+                'status code': status_code,
+                'message': 'You have been successfully logged in',
+                }
+            return Response(response, status=status_code)
+        response = {
+                'success': False,
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'It seems you have provided bad credentials',
+                }
+
+        return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, ])
-def user_like_post(request, user_pk=None, post_pk=None):
-    if user_pk and post_pk:
-        user = User.objects.filter(id=user_pk).first()
+def user_like_post(request, post_pk=None):
+    if request.user.is_authenticated:
+        user = User.objects.filter(id=request.user.id).first()
         post = Post.objects.filter(id=post_pk).first()
         user.user_profile.like_it.add(post)
         user.save()
@@ -58,9 +74,9 @@ def user_like_post(request, user_pk=None, post_pk=None):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, ])
-def user_unlike_post(request, user_pk=None, post_pk=None):
-    if user_pk and post_pk:
-        user = User.objects.filter(id=user_pk).first()
+def user_unlike_post(request, post_pk=None):
+    if request.user.is_authenticated:
+        user = User.objects.filter(id=request.user.id).first()
         post = Post.objects.filter(id=post_pk).first()
         user.user_profile.like_it.remove(post)
         user.save()
@@ -75,4 +91,4 @@ def user_unlike_post(request, user_pk=None, post_pk=None):
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated, ]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnlyUserProfile]

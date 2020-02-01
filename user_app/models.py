@@ -5,7 +5,7 @@ from sn_network.utils import pretty_datetime
 
 class UserManager(BaseUserManager):
 
-    def create(self, email, username, password):
+    def create_user(self, email, username, password):
         if not email:
             raise ValueError('Email is required')
         user = self.model(username=username,
@@ -61,4 +61,5 @@ class UserProfile(models.Model):
         ordering = ['first_name', 'last_name']
 
     def __str__(self):
-        return f'<User: username={self.username}>'
+        return (f'<User: first name={self.first_name}, '
+                f'last name={self.last_name}>')

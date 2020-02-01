@@ -1,10 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from emailhunter_app.serializers import EmailVerifySerializer
-from django.http import HttpResponseRedirect
-from sn_network import settings
+from django.conf import settings
 from rest_framework import status
 from rest_framework.response import Response
+import requests
 
 
 class EmailVerifyView(APIView):
@@ -12,10 +12,15 @@ class EmailVerifyView(APIView):
     serializer_class = EmailVerifySerializer
 
     def get(self, request, *args, **kwargs):
-        email = request.query_params.get('email', None)
+        email = request.GET.get('email', None)
         if email:
             api_key = settings.EMAILHUNTER_API_KEY
             query_params = f'?email={email}&api_key={api_key}'
             url_to = settings.EMAILHUNTER_URL + query_params
-            return HttpResponseRedirect(redirect_to=url_to)
-        return Response(status.HTTP_400_BAD_REQUEST)
+            response = requests.get(url_to)
+            data = response.json()
+            status_code = response.status_code
+            return Response(data,
+                            status=status_code,
+                            content_type='application/json')
+        return Response(status=status.HTTP_400_BAD_REQUEST)
