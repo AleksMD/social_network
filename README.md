@@ -90,6 +90,48 @@ http://127.0.0.1:8000/
 If there are no errors it means that everything works fine.
 
 See next section to understand how you run tests.
+## API Endpoints
+*You can user either desktop(Postman, Insomnia etc.) or console(curl, http
+etc.) tools for accessing API*
+> Sign Up:
+```
+curl -d "{\"username\": \"<your_username\">,\"password\":\"<your_password>\"}" -H "Content-Type: application/json"
+  http://localhost:8000/signup/
+```
+> Get access token:
+```
+curl -d "{\"username\": \"<your_username\">,\"password\":\"<your_password>\"}" -H "Content-Type: application/json"
+  http://localhost:8000/api/token/
+```
+> List of all users:
+```
+curl -H "Authorization: Bearer <your_token_from_previous_step>"
+  http://localhost:8000/users/
+
+```
+> Particular user:
+```
+curl -H "Authorization: Bearer <your_token>"
+  http://localhost:8000/users/<user_id>/
+```
+> List of all posts:
+```
+curl -H "Authorization: Bearer <your_token>"
+  http://localhost:8000/posts/
+```
+> Particular post:
+```
+curl -H "Authorization: Bearer <your_token>"
+  http://localhost:8000/posts/<post_id>/
+```
+>> N.B. Even though you are able to get data from database, at the very first
+>> time you run the app database is empty. Next version of the app will be
+>> provided with predefined data.
+> Create post:
+```
+curl -d "{\"title\": \"<post_title>\">,\"content\":\"<post_content>\"}" -H "Content-Type: application/json" -H "Authorization: Bearer <your_token>"
+http://localhost:8000/create_new_post/
+```
 
 ## Running the tests
 There  lots of test cases for this application.
