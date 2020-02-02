@@ -1,7 +1,6 @@
-# Society of freedom REST API
+# Society of Freedom REST API
 
-*This is a test API that emulates simple social network*
-The Society of freedom implements all neccessary features and tools for web
+The Society of Freedom implements all neccessary features and tools for web
 networking among people. It allows authorized usersto create, edit, delete posts. If you like post of other users you can mark it as a 'liked' post.
 Security of your data is guarded enough. It achived with JWT Autorization,
 which is a new standard of network security.
