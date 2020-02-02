@@ -150,8 +150,8 @@ curl -X POST -d "{\"title\": \"<post_title>\">,\"content\":\"<post_content>\"}" 
 http://localhost:8000/create_new_post/
 ```
 > Log in:
->>N.B. This step is only simulation of real login it just virify you as a user in
->>database.
+>
+>>N.B. This step is only simulation of a real logging. It just virify you as a user in database.
 >
 ```
 curl -X POST -d "{\"username\": \"<your_username\">,\"password\":\"<your_password>\"}" -H "Content-Type: application/json" \
