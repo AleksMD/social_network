@@ -126,6 +126,7 @@ curl -H "Authorization: Bearer <your_token>"
 >> N.B. Even though you are able to get data from database, at the very first
 >> time you run the app database is empty. Next version of the app will be
 >> provided with predefined data.
+>
 > Create post:
 ```
 curl -d "{\"title\": \"<post_title>\">,\"content\":\"<post_content>\"}" -H "Content-Type: application/json" -H "Authorization: Bearer <your_token>"
