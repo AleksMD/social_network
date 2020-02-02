@@ -94,33 +94,50 @@ See next section to understand how you run tests.
 etc.) tools for accessing API*
 > Sign Up:
 ```
-curl -d "{\"username\": \"<your_username\">,\"password\":\"<your_password>\"}" -H "Content-Type: application/json"
+curl -X POST -d "{\"username\": \"<your_username\">,\"password\":\"<your_password>\"}" -H "Content-Type: application/json" \
   http://localhost:8000/signup/
 ```
 > Get access token:
 ```
-curl -d "{\"username\": \"<your_username\">,\"password\":\"<your_password>\"}" -H "Content-Type: application/json"
+curl -X POST -d "{\"username\": \"<your_username\">,\"password\":\"<your_password>\"}" -H "Content-Type: application/json" \
   http://localhost:8000/api/token/
+```
+The output will be something like the following:
+```
+{"access": "<token>",
+"refresh": "<token>"}
+```
+> Refresh access token:
+```
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"refresh":"<refresh_token_from_previous_step>"}' \
+  http://localhost:8000/api/token/refresh/
+```
+The output:
+```
+{"access": "<new_access_token>"}
 ```
 > List of all users:
 ```
-curl -H "Authorization: Bearer <your_token_from_previous_step>"
+curl -H "Authorization: Bearer <your_token_from_previous_step>" \
   http://localhost:8000/users/
 
 ```
 > Particular user:
 ```
-curl -H "Authorization: Bearer <your_token>"
+curl -H "Authorization: Bearer <your_token>" \
   http://localhost:8000/users/<user_id>/
 ```
 > List of all posts:
 ```
-curl -H "Authorization: Bearer <your_token>"
+curl -H "Authorization: Bearer <your_token>" \
   http://localhost:8000/posts/
 ```
 > Particular post:
 ```
-curl -H "Authorization: Bearer <your_token>"
+curl -H "Authorization: Bearer <your_token>" \
   http://localhost:8000/posts/<post_id>/
 ```
 >> N.B. Even though you are able to get data from database, at the very first
@@ -129,9 +146,18 @@ curl -H "Authorization: Bearer <your_token>"
 >
 > Create post:
 ```
-curl -d "{\"title\": \"<post_title>\">,\"content\":\"<post_content>\"}" -H "Content-Type: application/json" -H "Authorization: Bearer <your_token>"
+curl -X POST -d "{\"title\": \"<post_title>\">,\"content\":\"<post_content>\"}" -H "Content-Type: application/json" -H "Authorization: Bearer <your_token>" \
 http://localhost:8000/create_new_post/
 ```
+> Log in:
+>>N.B. This step is only simulation of real login it just virify you as a user in
+>>database.
+>
+```
+curl -X POST -d "{\"username\": \"<your_username\">,\"password\":\"<your_password>\"}" -H "Content-Type: application/json" \
+  http://localhost:8000/login/
+```
+
 
 ## Running the tests
 There  lots of test cases for this application.
