@@ -159,7 +159,7 @@ curl -X POST -d "{\"username\": \"<your_username\">,\"password\":\"<your_passwor
 ```
 
 
-## Running the tests
+## Testing
 There  lots of test cases for this application.
 To run all of those use following command:
 
