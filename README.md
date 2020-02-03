@@ -88,7 +88,6 @@ http://127.0.0.1:8000/
 ```
 If there are no errors it means that everything works fine.
 
-See next section to understand how you run tests.
 ## API Endpoints
 *You can user either desktop(Postman, Insomnia etc.) or console(curl, http
 etc.) tools for accessing API*
